@@ -80,11 +80,10 @@
 <br />
 <div class="row">
   <div class="col-xs-6 text-center">
-  <form id="entry" method="POST" action="/_check">
+  <form id="entry">
     <label for="attempt">Word:</label>
     <input id="attempt" name="attempt" type="text" width="15"
       autocomplete="off"  autofocus />
-    <input type="submit" name="try" />
   </form>
 </div></div>
 
@@ -98,17 +97,79 @@
   {% endfor %}
 </p>
 {% endif %}
-
-
+<!--
 {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <!-- Mismatch, already found, etc. "flashed" from Python -->
+     Mismatch, already found, etc. "flashed" from Python 
     {% for message in messages %}
       <p class="message">{{ message }}</p>
     {% endfor %}
   {% endif %}
 {% endwith %}
+--!>
 
+<p id="user_interaction"> </p>
+<p id="response"> </p>
+<p id="tiles"> </p> <!-- Graphics on the page -->
+<script>
+
+$("#entry").submit( function(event) {
+   event.preventDefault();
+  });
+
+$("#attempt").keyup(function(event) {
+   var txt = $("#attempt").val();	//Current State of Input Field
+   var keycode = event.which;	//The key that just went up
+   var letter = String.fromCharCode(keycode);
+
+   //Check if the key that was caught was a letter
+   if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {return}
+
+   $.getJSON( "/_check", {text: txt },
+              function(data) {
+                rsval = data.result.is_a_word;
+		success = data.result.finished;
+                new_wrd = data.result.new_word;
+                console.log("rsval: " + rsval);
+                if (success) {
+		   $("#user_interaction").val("");
+                   $("#response").append(txt);
+                   $("#attempt").val(""); 
+                }
+                else if (rsval && new_wrd) {
+		   $("#user_interaction").val("") 
+                   $("#response").append(txt + "<br>");
+                   $("#attempt").val("");
+                }
+                else if(rsval && !new_wrd){
+                   $("#user_interaction").html("You already entered that word!");
+		   $("#attempt").val("");
+                   
+		}
+                else {
+                   $("#user_interaction").val("");
+                }
+                showTiles(txt);
+              }
+            );
+   });
+
+function showTiles(text) {
+   text = text.toUpperCase();
+   tiles_html = "";
+   for (var i=0; i < text.length; i++) {
+       letter = text.charAt(i);
+       if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {
+          continue;
+       }
+       var titleURL = "/static/img/letter-" + letter + ".png";
+       var titleLink = "<img src=" + titleURL +
+           "' style='border: 0px; margin: 0px;'/>";
+       tiles_html = tiles_html + titleLink;
+   }
+   $("#titles").html(tiles_html);
+}
+</script>
 
 
  </div> <!-- container -->
