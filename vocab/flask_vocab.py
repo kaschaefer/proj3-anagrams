@@ -104,10 +104,10 @@ def check():
         app.logger.debug("The letter is in the jumble")
         matches.append(text)
         flask.session["matches"] = matches
-        app.logger.debug(len(matches))
+        app.logger.debug(in_jumble)
         if len(matches) >= flask.session["target_count"]:
            success_url = flask.url_for("success")
-           rslt = {"is_a_word": True, "new_word": True, "finished": True, "url": success_url}
+           rslt = {"is_a_word": True, "new_word": True, "finished": True}
         else:
            rslt = {"is_a_word": True, "new_word": True, "finished": False}
     elif text in matches:
