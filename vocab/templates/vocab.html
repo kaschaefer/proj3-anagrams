@@ -89,27 +89,8 @@
 
 <br />
 
-{% if session.matches|length is not equalto 0  %}
-<h2>You found </h2>
-<p id="results">
-  {% for match in session.matches %}
-  {{ match }} 
-  {% endfor %}
-</p>
-{% endif %}
-<!--
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-     Mismatch, already found, etc. "flashed" from Python 
-    {% for message in messages %}
-      <p class="message">{{ message }}</p>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
---!>
-
-<p id="user_interaction"> </p>
-<p id="response"> </p>
+<div id="bad_user_message" style="display:none;">You already entered this word!</div> <!-- This message will only be displayed if the user enters a word that they already entered -->
+<p id="response">Successfully Completed Words: <br> </p> <!-- This is where the user's entered words will be displayed -->
 <p id="tiles"> </p> <!-- Graphics on the page -->
 <script>
 
@@ -130,8 +111,10 @@ $("#attempt").keyup(function(event) {
                 rsval = data.result.is_a_word;
 		success = data.result.finished;
                 new_wrd = data.result.new_word;
+		success_url = data.result.url;
                 console.log("rsval: " + rsval);
                 if (success) {
+                   window.location.replace("/success");
 		   $("#user_interaction").val("");
                    $("#response").append(txt);
                    $("#attempt").val(""); 
@@ -142,9 +125,9 @@ $("#attempt").keyup(function(event) {
                    $("#attempt").val("");
                 }
                 else if(rsval && !new_wrd){
-                   $("#user_interaction").html("You already entered that word!");
-		   $("#attempt").val("");
-                   
+                   $("#bad_user_message").fadeIn('slow', function() {
+                      $("#bad_user_message").delay(2500).fadeOut();
+                   }); 
 		}
                 else {
                    $("#user_interaction").val("");

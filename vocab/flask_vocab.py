@@ -106,7 +106,8 @@ def check():
         flask.session["matches"] = matches
         app.logger.debug(len(matches))
         if len(matches) >= flask.session["target_count"]:
-           rslt = {"is_a_word": True, "new_word": True, "finished": True}
+           success_url = flask.url_for("success")
+           rslt = {"is_a_word": True, "new_word": True, "finished": True, "url": success_url}
         else:
            rslt = {"is_a_word": True, "new_word": True, "finished": False}
     elif text in matches:
