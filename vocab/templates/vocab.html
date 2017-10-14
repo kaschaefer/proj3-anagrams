@@ -114,9 +114,9 @@ $("#attempt").keyup(function(event) {
       $.getJSON( "/_check", {text: txt},
                  function(data) {
                    rsval = data.result.is_a_word;
-	       	         success = data.result.finished; //Has the user spelled enough words
+                   success = data.result.finished; //Has the user spelled enough words
                    new_wrd = data.result.new_word; //Is the word spelled a new word
-		               console.log("rsval: " + rsval);
+		   console.log("rsval: " + rsval);
                    if (success) {
                       window.location.replace("/success");
                    }
@@ -131,7 +131,7 @@ $("#attempt").keyup(function(event) {
 	                 }
                    else {
                    
-		               }
+                   }
                  }
                );
    }    
