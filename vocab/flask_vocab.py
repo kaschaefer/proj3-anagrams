@@ -99,22 +99,24 @@ def check():
     # Is it good?
     in_jumble = LetterBag(jumble).contains(text)
     matched = WORDS.has(text)
+
     if in_jumble and matched and not (text in matches):
-	#They found a new word
-        app.logger.debug("The letter is in the jumble")
+	# They found a new word
         matches.append(text)
         flask.session["matches"] = matches
-        app.logger.debug(in_jumble)
+        # Did they win the game?
         if len(matches) >= flask.session["target_count"]:
            success_url = flask.url_for("success")
            rslt = {"is_a_word": True, "new_word": True, "finished": True}
         else:
            rslt = {"is_a_word": True, "new_word": True, "finished": False}
+    # Did they try to enter the same word again
     elif text in matches:
         rslt = {"is_a_word": True, "new_word": False, "finished": False}
+    # Handle any unhandled cases
     else:
         rslt = {"is_a_word": False, "finished": False}   
-    return flask.jsonify(result=rslt)
+    return flask.jsonify(result = rslt)
 
 ###############
 # AJAX request handlers

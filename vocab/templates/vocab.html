@@ -98,7 +98,7 @@ $("#entry").submit( function(event) {
    event.preventDefault();
   });
 
-var prior_value = "";
+var prior_value = "";  //Global var used to avoid double GET requests
 
 $("#attempt").keyup(function(event) {
    var txt = $("#attempt").val();	//Current State of Input Field
@@ -107,17 +107,16 @@ $("#attempt").keyup(function(event) {
 
    //Check if the key that was caught was a letter
    if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {return}
-   console.log("txt is " + txt);
-   console.log("P value is " + prior_value); 
-   //Check for duplicate GET requests
+
+   //Check for duplicate GET requests before sending AJAX request
    if (txt !== prior_value) {
       prior_value = txt;
       $.getJSON( "/_check", {text: txt},
                  function(data) {
                    rsval = data.result.is_a_word;
-	       	   success = data.result.finished; //Has the user spelled enough words
+	       	         success = data.result.finished; //Has the user spelled enough words
                    new_wrd = data.result.new_word; //Is the word spelled a new word
-		   console.log("rsval: " + rsval);
+		               console.log("rsval: " + rsval);
                    if (success) {
                       window.location.replace("/success");
                    }
@@ -129,31 +128,14 @@ $("#attempt").keyup(function(event) {
                       $("#bad_user_message").fadeIn('slow', function() {
                          $("#bad_user_message").delay(2500).fadeOut();
                       }); 
-	           }
+	                 }
                    else {
-                
-		   }
-                   showTiles(txt);
+                   
+		               }
                  }
-                );
+               );
    }    
 });
-
-function showTiles(text) {
-   text = text.toUpperCase();
-   tiles_html = "";
-   for (var i=0; i < text.length; i++) {
-       letter = text.charAt(i);
-       if (! "ABCDEFGHIJKLMNOPQRSTUVWXYZ".includes(letter)) {
-          continue;
-       }
-       var titleURL = "/static/img/letter-" + letter + ".png";
-       var titleLink = "<img src=" + titleURL +
-           "' style='border: 0px; margin: 0px;'/>";
-       tiles_html = tiles_html + titleLink;
-   }
-   $("#titles").html(tiles_html);
-}
 </script>
 
 
