@@ -33,3 +33,11 @@ def test_jumbled_pair():
 
 def test_jumbled_more():
     assert same(jumbled(["aabc", "abac", "bcaa"], 2), "aabc")
+
+
+"""
+Kaela's Test for Empty Jumble
+"""
+
+def test_jumbled_empty():
+    assert same(jumbled([""], 1), "")
